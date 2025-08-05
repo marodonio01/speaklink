@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes gradientBG {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+.container {
+  background: #ffffffee;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #3a1c71;
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: #3a1c71;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #5e308f;
+}
+.service-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.service-list li {
+  background: #f3f3f3;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 10px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.3s;
+}
+
+.service-list li:hover {
+  background-color: #e0e0ff;
+  cursor: pointer;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #3a1c71;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+}
+
+.info-section ul {
+  text-align: left;
+  padding-left: 1.2rem;
+}
+
+.info-section h2 {
+  margin-bottom: 0.5rem;
+  color: #2575fc;
+  font-size: 1.3rem;
+}
+
+form button[type="button"] {
+  padding: 0 0.75rem;
+  font-size: 1.25rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #eeeeee;
+  cursor: pointer;
+}
+
+form button[type="button"]:hover {
+  background-color: #dddddd;
+}
+
+ .form-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-row input {
+      flex: 1;
+    }
+
+    .mic-button {
+      background: #2575fc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .mic-button:hover {
+      background: #1a5be2;
+    }
+
+    .form-group {
+      text-align: left;
+    }
+
+    h1 {
+      text-align: left;
+    }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Capture & OCR</title>
+  <style>
+    body { font-family: sans-serif; padding: 10px; }
+    button { padding: 10px 15px; font-size: 16px; }
+    img { margin-top: 10px; max-width: 100%; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <button id="startCapture">Select Area & Capture</button>
+  <div id="result"></div>
+  <h3>Extracted Text:</h3>
+  <pre id="ocr-result">No text extracted yet.</pre>
+
+  <script src="tesseract.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SSS Application Form</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Submit Application Form</h2>
+    <form id="sssForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="text" id="name" name="name" required />
+          <button type="button" onclick="startVoiceInput('name')">🎤</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="email" id="email" name="email" required />
+          <button type="button" onclick="startVoiceInput('email')">🎤</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sssNumber">SSS Number</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="text" id="sssNumber" name="sssNumber" required />
+          <button type="button" onclick="startVoiceInput('sssNumber')">🎤</button>
+        </div>
+      </div>
+      <button type="submit" id="voiceBtn">Submit</button>
+    </form>
+
+    <div id="result" style="display: none; margin-top: 2rem;">
+      <h3>Submitted Information</h3>
+      <p><strong>Name:</strong> <span id="result-name"></span></p>
+      <p><strong>Email:</strong> <span id="result-email"></span></p>
+      <p><strong>SSS Number:</strong> <span id="result-sss"></span></p>
+
+      <h3>Isinaling Impormasyon (Filipino)</h3>
+      <p><strong>Pangalan:</strong> <span id="filipino-name"></span></p>
+      <p><strong>Email:</strong> <span id="filipino-email"></span></p>
+      <p><strong>SSS Numero:</strong> <span id="filipino-sss"></span></p>
+    </div>
+
+    <div class="back">
+      <a href="sss.html">&larr; Back to SSS Info</a>
+    </div>
+  </div>
+
+  <script>
+    function startVoiceInput(fieldId) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById(fieldId).value = transcript;
+      };
+    }
+
+    document.getElementById('sssForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const sss = document.getElementById('sssNumber').value;
+
+      document.getElementById('result-name').innerText = name;
+      document.getElementById('result-email').innerText = email;
+      document.getElementById('result-sss').innerText = sss;
+
+      // Filipino Translation (simple)
+      document.getElementById('filipino-name').innerText = name;
+      document.getElementById('filipino-email').innerText = email;
+      document.getElementById('filipino-sss').innerText = sss;
+
+      document.getElementById('sssForm').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

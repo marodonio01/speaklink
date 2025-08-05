@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>List of Services - SpeakLink</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🗂️ List of Services</h1>
+    <p>Select a service to view details and the nearest office:</p>
+		<ul class="service-list">
+		  <li><a href="sss.html">SSS Security Benefits</a></li>
+		  <li><a href="#">Pag-IBIG Benefits</a></li>
+		  <li><a href="#">PhilHealth Medical Assistance</a></li>
+		</ul>
+
+    <div id="service-info" class="service-info" style="display: none;">
+      <h3 id="service-name"></h3>
+      <p>Mock Link: <a id="service-link" href="#" target="_blank"></a></p>
+      <div id="map-container" style="margin-top: 1rem;">
+        <iframe id="map-frame"
+          width="100%"
+          height="300"
+          style="border:0; border-radius: 10px;"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+
+    <a href="index.html" class="back">← Back to Home</a>
+  </div>
+
+  <script>
+    const services = {
+      1: {
+        name: 'SSS Security Benefits',
+        link: 'https://www.mock-sss.gov.ph'
+      },
+      2: {
+        name: 'Pag-IBIG Benefits',
+        link: 'https://www.mock-pagibig.gov.ph'
+      },
+      3: {
+        name: 'PhilHealth Medical Assistance',
+        link: 'https://www.mock-philhealth.gov.ph'
+      }
+    };
+
+    function showServiceInfo(id) {
+      const service = services[id];
+      document.getElementById('service-name').innerText = service.name;
+      document.getElementById('service-link').innerText = service.link;
+      document.getElementById('service-link').href = service.link;
+      document.getElementById('service-info').style.display = 'block';
+
+      // Geolocation and mock Google Maps view
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const mapUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(service.name)}+office&center=${lat},${lng}&zoom=13`;
+          document.getElementById('map-frame').src = mapUrl;
+        }, () => {
+          document.getElementById('map-frame').src = 'https://maps.google.com';
+        });
+      } else {
+        document.getElementById('map-frame').src = 'https://maps.google.com';
+      }
+    }
+  </script>
+</body>
+</html>

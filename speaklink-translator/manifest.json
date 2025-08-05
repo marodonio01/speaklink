@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "SpeakLink Screenshot Capture",
+  "version": "1.3",
+  "description": "Capture and crop a screenshot of a selected area, then run OCR.",
+  "permissions": ["tabs", "scripting", "activeTab", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["tesseract.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
