@@ -1,20 +1,122 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Capture & OCR</title>
+  <title>SpeakLink Translator</title>
   <style>
-    body { font-family: sans-serif; padding: 10px; }
-    button { padding: 10px 15px; font-size: 16px; }
-    img { margin-top: 10px; max-width: 100%; border: 1px solid #ccc; }
+    body {
+      width: 600px;
+      font-family: Arial, sans-serif;
+      padding: 10px;
+    }
+    h4 {
+      margin-bottom: 5px;
+    }
+    .image-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .image-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .image-box img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .text-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .text-box-wrapper {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .text-box {
+      flex: 1;
+      background: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .speak-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-top: 5px;
+      align-self: flex-end;
+      cursor: pointer;
+    }
+    .speak-btn img {
+      width: 40px;
+      height: 33px;
+    }
+    .speak-btn:hover img {
+      opacity: 0.7;
+    }
+    button#startCapture {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button#startCapture:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <button id="startCapture">Select Area & Capture</button>
-  <div id="result"></div>
-  <h3>Extracted Text:</h3>
-  <pre id="ocr-result">No text extracted yet.</pre>
+  <button id="startCapture">Start Capture</button>
 
-  <script src="tesseract.min.js"></script>
+  <div class="image-container">
+    <div class="image-box">
+      <h4>Cropped Image:</h4>
+      <img id="cropped-img" alt="Cropped Image">
+    </div>
+    <div class="image-box">
+      <h4>Translated Overlay Image:</h4>
+      <img id="overlay-img" alt="Overlay Image">
+    </div>
+  </div>
+
+	<h4>Extracted & Translated Text:</h4>
+	<div style="margin-bottom: 10px;">
+	  <label for="target-lang">Translate to:</label>
+	  <select id="target-lang">
+		<option value="tl">Filipino</option>
+		<option value="es">Spanish</option>
+		<option value="fr">French</option>
+		<option value="de">German</option>
+		<option value="ja">Japanese</option>
+		<option value="zh-CN">Chinese (Simplified)</option>
+	  </select>
+	</div>
+
+	<div class="text-container">
+	  <div class="text-box-wrapper">
+		<pre id="ocr-result" class="text-box">Waiting for OCR...</pre>
+		<button id="speak-ocr" class="speak-btn">
+		  <img src="talkperson.png" alt="Speak">
+		</button>
+	  </div>
+	  <div class="text-box-wrapper">
+		<pre id="translated-result" class="text-box">Waiting for translation...</pre>
+		<button id="speak-translation" class="speak-btn">
+		  <img src="talkperson.png" alt="Speak">
+		</button>
+	  </div>
+	</div>
+
   <script src="popup.js"></script>
+  <script src="speech.js"></script>
 </body>
 </html>

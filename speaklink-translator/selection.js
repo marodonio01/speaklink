@@ -1,10 +1,11 @@
-// selection.js
 window.startSelection = () => {
   const selectionDiv = document.createElement('div');
-  selectionDiv.style.position = 'fixed';
-  selectionDiv.style.border = '2px dashed red';
-  selectionDiv.style.zIndex = 9999;
-  selectionDiv.style.backgroundColor = 'rgba(255,0,0,0.2)';
+  Object.assign(selectionDiv.style, {
+    position: 'fixed',
+    border: '2px dashed red',
+    zIndex: 9999,
+    backgroundColor: 'rgba(255,0,0,0.2)'
+  });
   document.body.appendChild(selectionDiv);
 
   let startX, startY;
@@ -12,19 +13,16 @@ window.startSelection = () => {
   const onMouseDown = (e) => {
     startX = e.clientX;
     startY = e.clientY;
-
-    selectionDiv.style.left = startX + 'px';
-    selectionDiv.style.top = startY + 'px';
+    selectionDiv.style.left = `${startX}px`;
+    selectionDiv.style.top = `${startY}px`;
     selectionDiv.style.width = '0px';
     selectionDiv.style.height = '0px';
 
     const onMouseMove = (e) => {
-      const currentX = e.clientX;
-      const currentY = e.clientY;
-      selectionDiv.style.width = Math.abs(currentX - startX) + 'px';
-      selectionDiv.style.height = Math.abs(currentY - startY) + 'px';
-      selectionDiv.style.left = Math.min(currentX, startX) + 'px';
-      selectionDiv.style.top = Math.min(currentY, startY) + 'px';
+      selectionDiv.style.width = `${Math.abs(e.clientX - startX)}px`;
+      selectionDiv.style.height = `${Math.abs(e.clientY - startY)}px`;
+      selectionDiv.style.left = `${Math.min(e.clientX, startX)}px`;
+      selectionDiv.style.top = `${Math.min(e.clientY, startY)}px`;
     };
 
     const onMouseUp = () => {
