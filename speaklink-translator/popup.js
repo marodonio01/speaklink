@@ -1,17 +1,38 @@
+// popup.js
 const OCR_API_KEY = "K85624106488957"; // OCR.space API key
 
-let lastOcrLines = null; // store OCR lines
-let lastCroppedCanvas = null; // store cropped canvas
+let lastOcrLines = null; // from OCR.space TextOverlay.Lines
+let lastCroppedCanvas = null;
 let lastScale = 1;
 
-// MyMemory Translation API function
+// simple mapping from select value to TTS lang (approximate)
+function mapTargetToTtsLang(target) {
+  switch (target) {
+    case "tl":
+    case "fil":
+      return "fil-PH";
+    case "es":
+      return "es-ES";
+    case "fr":
+      return "fr-FR";
+    case "de":
+      return "de-DE";
+    case "ja":
+      return "ja-JP";
+    case "zh-CN":
+      return "zh-CN";
+    default:
+      return "en-US";
+  }
+}
+
 function translateTextMyMemory(text, targetLang) {
   const encodedText = encodeURIComponent(text);
   const apiUrl = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=en|${targetLang}`;
 
   return fetch(apiUrl)
     .then(res => res.json())
-    .then(data => data.responseData.translatedText || "Translation failed.")
+    .then(data => data.responseData?.translatedText || "Translation failed.")
     .catch(err => {
       console.error("Translation API Error:", err);
       return "Translation failed.";
@@ -32,19 +53,20 @@ async function renderTranslation(targetLang) {
   overlayCtx.textAlign = "center";
   overlayCtx.textBaseline = "middle";
 
-  let translatedFullText = "";
+  const translatedLines = [];
 
   for (let line of lastOcrLines) {
-    const lineText = line.Words.map(w => w.WordText).join(" ");
-    if (!lineText.trim()) continue;
+    const lineText = (line.Words || []).map(w => w.WordText).join(" ").trim();
+    if (!lineText) continue;
 
     const translatedLine = await translateTextMyMemory(lineText, targetLang);
-    translatedFullText += translatedLine + "\n";
+    translatedLines.push(translatedLine);
 
-    const x = line.Words[0].Left * lastScale;
-    const y = line.Words[0].Top * lastScale;
-    const ocrWidth = line.Words.reduce((acc, w) => acc + w.Width, 0) * lastScale;
-    const ocrHeight = line.MaxHeight * lastScale;
+    // draw overlay box + text
+    const x = (line.Words[0].Left || 0) * lastScale;
+    const y = (line.Words[0].Top || 0) * lastScale;
+    const ocrWidth = (line.Words.reduce((acc, w) => acc + (w.Width || 0), 0) || 0) * lastScale;
+    const ocrHeight = (line.MaxHeight || fontSize) * lastScale;
 
     const textWidth = overlayCtx.measureText(translatedLine).width;
     const boxWidth = Math.max(ocrWidth, textWidth + 20);
@@ -60,32 +82,51 @@ async function renderTranslation(targetLang) {
     overlayCtx.fillText(translatedLine, x + boxWidth / 2, y + boxHeight / 2);
   }
 
-  document.getElementById('translated-result').textContent = translatedFullText.trim();
-  document.getElementById('overlay-img').src = overlayCanvas.toDataURL('image/png');
+  // render translated lines in popup via speechController
+  const ttsLang = mapTargetToTtsLang(targetLang);
+  if (window.speechController && typeof window.speechController.renderTranslationLines === "function") {
+    window.speechController.renderTranslationLines(translatedLines, ttsLang);
+  } else {
+    // fallback: set the old element if exists
+    const tr = document.getElementById('translated-result');
+    if (tr) tr.textContent = translatedLines.join("\n");
+  }
+
+  // set overlay image
+  const overlayImgEl = document.getElementById('overlay-img');
+  if (overlayImgEl) overlayImgEl.src = overlayCanvas.toDataURL('image/png');
 }
 
-document.getElementById('startCapture').addEventListener('click', () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tabId = tabs[0].id;
+window.addEventListener('DOMContentLoaded', () => {
+  const startCaptureBtn = document.getElementById('startCapture');
+  const targetSelect = document.getElementById('target-lang');
+  const croppedImgEl = document.getElementById('cropped-img');
 
-    chrome.scripting.executeScript({
-      target: { tabId },
-      files: ['selection.js']
-    }, () => {
-      chrome.scripting.executeScript({
-        target: { tabId },
-        func: () => window.startSelection && window.startSelection()
+  if (startCaptureBtn) {
+    startCaptureBtn.addEventListener('click', () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs[0].id;
+
+        chrome.scripting.executeScript({
+          target: { tabId },
+          files: ['selection.js']
+        }, () => {
+          chrome.scripting.executeScript({
+            target: { tabId },
+            func: () => window.startSelection && window.startSelection()
+          });
+        });
       });
     });
-  });
-});
+  }
 
-document.getElementById('target-lang').addEventListener('change', () => {
-  const targetLang = document.getElementById('target-lang').value;
-  renderTranslation(targetLang);
-});
+  if (targetSelect) {
+    targetSelect.addEventListener('change', () => {
+      renderTranslation(targetSelect.value);
+    });
+  }
 
-window.addEventListener('DOMContentLoaded', () => {
+  // load screenshot & run OCR if available
   chrome.storage.local.get(['fullScreenshot', 'cropRect', 'devicePixelRatio'], (data) => {
     if (!data.fullScreenshot || !data.cropRect) {
       console.warn("⚠ No screenshot data found.");
@@ -93,7 +134,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const image = new Image();
-    image.onload = () => {
+    image.onload = async () => {
       lastScale = data.devicePixelRatio || 1;
 
       // Prepare cropped canvas
@@ -114,42 +155,59 @@ window.addEventListener('DOMContentLoaded', () => {
         data.cropRect.height * lastScale
       );
 
-      const croppedImage = lastCroppedCanvas.toDataURL('image/png');
-      document.getElementById('cropped-img').src = croppedImage;
-      document.getElementById('cropped-img').addEventListener('click', () => {
-        chrome.tabs.create({ url: croppedImage });
-      });
+      const croppedDataUrl = lastCroppedCanvas.toDataURL('image/png');
+      if (croppedImgEl) {
+        croppedImgEl.src = croppedDataUrl;
+        croppedImgEl.addEventListener('click', () => {
+          chrome.tabs.create({ url: croppedDataUrl });
+        });
+      }
 
-      // Step 1: Send to OCR.space with overlay request
+      // Send to OCR.space
       console.log("📤 Sending to OCR.space...");
-      fetch("https://api.ocr.space/parse/image", {
-        method: "POST",
-        headers: { "apikey": OCR_API_KEY },
-        body: (() => {
-          const formData = new FormData();
-          formData.append("base64Image", croppedImage);
-          formData.append("language", "eng");
-          formData.append("isOverlayRequired", "true");
-          return formData;
-        })()
-      })
-      .then(res => res.json())
-      .then(async (result) => {
+      try {
+        const formData = new FormData();
+        formData.append("base64Image", croppedDataUrl);
+        formData.append("language", "eng");
+        formData.append("isOverlayRequired", "true");
+
+        const res = await fetch("https://api.ocr.space/parse/image", {
+          method: "POST",
+          headers: { "apikey": OCR_API_KEY },
+          body: formData
+        });
+        const result = await res.json();
         console.log("📥 OCR API Response:", result);
-        let fullText = result?.ParsedResults?.[0]?.ParsedText || '';
-        document.getElementById('ocr-result').textContent = fullText || 'No text found.';
 
-        lastOcrLines = result?.ParsedResults?.[0]?.TextOverlay?.Lines || [];
-        console.log("📏 Detected lines:", lastOcrLines.length);
+        const parsed = result?.ParsedResults?.[0];
+        const fullText = parsed?.ParsedText || '';
+        // Build lines from TextOverlay if available
+        lastOcrLines = parsed?.TextOverlay?.Lines || [];
 
-        // First render with default selected language
-        const targetLang = document.getElementById('target-lang').value;
-        renderTranslation(targetLang);
-      })
-      .catch(err => {
-        document.getElementById('ocr-result').textContent = 'Error during OCR.';
-        console.error(err);
-      });
+        // If overlay lines exist, build line strings; otherwise fallback to fullText split.
+        let extractedLines = [];
+        if (lastOcrLines.length) {
+          extractedLines = lastOcrLines.map(line => (line.Words || []).map(w => w.WordText).join(" ").trim()).filter(Boolean);
+        } else {
+          extractedLines = (fullText || '').split("\n").map(s => s.trim()).filter(Boolean);
+        }
+
+        // render OCR lines via speechController (TTS lang en-US)
+        if (window.speechController && typeof window.speechController.renderOcrLines === "function") {
+          window.speechController.renderOcrLines(extractedLines, "en-US");
+        } else {
+          const ocrEl = document.getElementById('ocr-lines');
+          if (ocrEl) ocrEl.textContent = extractedLines.join("\n") || 'No text found.';
+        }
+
+        // render translated text for currently selected language
+        const targetLang = targetSelect ? targetSelect.value : 'tl';
+        await renderTranslation(targetLang);
+      } catch (err) {
+        console.error("OCR error:", err);
+        const ocrEl = document.getElementById('ocr-lines');
+        if (ocrEl) ocrEl.textContent = 'Error during OCR.';
+      }
     };
 
     image.src = data.fullScreenshot;

@@ -1,21 +1,130 @@
 body {
-  font-family: sans-serif;
-  margin: 0;
+  width: 600px;
+  font-family: Arial, sans-serif;
   padding: 10px;
-  width: 200px;
 }
 
-.popup {
+h4 {
+  margin-bottom: 5px;
+}
+
+.image-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-box {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
 }
 
-button {
-  padding: 8px;
-  background-color: #2575fc;
+.image-box img {
+  max-width: 100%;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.text-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.text-box-wrapper {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.text-box {
+  flex: 1;
+  background: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ccc;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.speak-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 5px;
+  align-self: flex-end;
+  cursor: pointer;
+}
+
+.speak-btn img {
+  width: 40px;
+  height: 33px;
+}
+
+.speak-btn:hover img {
+  opacity: 0.7;
+}
+
+button#startCapture {
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
+  padding: 8px 12px;
   cursor: pointer;
+  border-radius: 4px;
+}
+
+button#startCapture:hover {
+  background-color: #0056b3;
+}
+
+/* Replaced inline style margin-bottom:10px; */
+.lang-select-container {
+  margin-bottom: 10px;
+}
+
+/* --- Per-line display for OCR / Translation --- */
+.line-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.line-text {
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+/* small image button for speak */
+.line-speak-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.line-speak-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.line-speak-btn:hover img {
+  opacity: 0.8;
+}
+
+/* When text is being read we can add a highlight class (speech.js will toggle it) */
+.line-reading {
+  background-color: rgba(255, 235, 59, 0.15); /* subtle yellow */
 }
