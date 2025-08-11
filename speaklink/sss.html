@@ -57,20 +57,26 @@
   </div>
 
   <script>
-    // Auto-load map centered on user's location
-    const officeQuery = "SSS office";
+    function showSSSOffices(lat, lon) {
+      const query = `SSS office near ${lat},${lon}`;
+      const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
+      document.getElementById("map-frame").src = mapUrl;
+      document.getElementById("status").innerText = "🗺️ Showing SSS offices near you.";
+    }
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const mapUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(officeQuery)}&center=${lat},${lng}&zoom=13`;
-        document.getElementById('map-frame').src = mapUrl;
-      }, () => {
-        document.getElementById('map-frame').src = 'https://maps.google.com';
-      });
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          showSSSOffices(lat, lon);
+        },
+        error => {
+          document.getElementById("status").innerText = "⚠️ Location access denied.";
+        }
+      );
     } else {
-      document.getElementById('map-frame').src = 'https://maps.google.com';
+      document.getElementById("status").innerText = "❌ Geolocation not supported.";
     }
   </script>
 </body>

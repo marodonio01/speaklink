@@ -10,11 +10,47 @@
   <div class="container">
     <h1>🎙️ SpeakLink</h1>
     <p>Say <strong>"Start"</strong> to proceed.</p>
-    <button id="startListening">Start Listening</button>
+    <button onclick="window.location.href='services.html'">Go to Services</button>
     <p id="status">Waiting for voice input...</p>
   </div>
 
-  <script src="voice-listener.js"></script>
+  <script>
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      document.getElementById("status").innerText = "❌ Speech recognition not supported in this browser.";
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true; // Keep listening during a session
+      recognition.interimResults = false; // Only process final results
+      recognition.lang = "en-US"; // You can change to "fil-PH"
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+        document.getElementById("status").innerText = `🗣 Heard: "${transcript}"`;
+
+        // if (transcript.startsWith("start")) {
+        if (transcript.toLowerCase().includes("start") || transcript.toLowerCase().includes("magsimula")) {
+          window.location.href = "services.html"; // To be created later
+        } else {
+          status.textContent += " — try saying the 'Start'";
+        }
+      };
+
+      recognition.onerror = (event) => {
+        document.getElementById("status").innerText = `⚠ Error: ${event.error}`;
+      };
+
+      recognition.onend = () => {
+        // 🔄 Restart listening automatically
+        recognition.start();
+      };
+
+      // 🚀 Start immediately
+      recognition.start();
+    }
+
+  </script>
 </body>
 </html>
 	

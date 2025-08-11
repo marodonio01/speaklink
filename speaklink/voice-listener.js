@@ -18,11 +18,18 @@ document.getElementById("startListening").addEventListener("click", () => {
     const transcript = event.results[0][0].transcript.trim().toLowerCase();
     status.textContent = `You said: "${transcript}"`;
 
-    if (transcript === "start") {
-      window.location.href = "services.html"; // To be created later
-    } else {
-      status.textContent += " — try saying 'Start'.";
-    }
+
+      if (transcript.toLowerCase().includes("sss")) {
+        window.location.href = "sss.html"; // To be created later
+      } else if (transcript.toLowerCase().includes("pag-ibig")) {
+        window.location.href = "pagibig.html"; // To be created later
+      } else if (transcript.toLowerCase().includes("philhealth")) {
+        window.location.href = "philhealth.html"; // To be created later
+      }else if (transcript.toLowerCase().includes("back") || transcript.toLowerCase().includes("exit") || transcript.toLowerCase().includes("tapusin") || transcript.toLowerCase().includes("bumalik")) {
+        window.location.href = "index.html"; // To be created later
+      } else {
+        status.textContent += " — try saying the desired social service.";
+      }
   };
 
   recognition.onerror = (event) => {
