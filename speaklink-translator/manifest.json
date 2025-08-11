@@ -15,5 +15,19 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["widget/content-widget.js"],
+      "css": ["widget/widget-style.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["talkperson.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

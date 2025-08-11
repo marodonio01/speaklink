@@ -1,0 +1,117 @@
+/* Floating widget container */
+#speaklink-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 600px;
+  max-height: 500px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Header bar with close button */
+#speaklink-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  cursor: move; /* Show draggable cursor */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#speaklink-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Main content inside widget */
+#speaklink-content {
+  padding: 10px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Reuse your existing styles from popup, adapted */
+
+.image-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.image-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.image-box img {
+  max-width: 100%;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+.text-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.text-box-wrapper {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.text-box {
+  flex: 1;
+  background: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ccc;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 150px;
+  overflow-y: auto;
+}
+.speak-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 5px;
+  align-self: flex-end;
+  cursor: pointer;
+}
+.speak-btn img {
+  width: 40px;
+  height: 33px;
+}
+.speak-btn:hover img {
+  opacity: 0.7;
+}
+button#startCapture {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+button#startCapture:hover {
+  background-color: #0056b3;
+}
+#target-lang {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
