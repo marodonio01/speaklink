@@ -26,7 +26,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["talkperson.png"],
+      "resources": ["talkperson.png","speaklinkicon.png","speaklinkicon.gif"],
       "matches": ["<all_urls>"]
     }
   ]

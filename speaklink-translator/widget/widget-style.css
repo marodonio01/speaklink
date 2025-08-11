@@ -3,7 +3,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 600px;
+  width: 600px !important;
   max-height: 500px;
   background: white;
   border: 1px solid #ccc;

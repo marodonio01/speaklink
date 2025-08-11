@@ -1,16 +1,38 @@
 (() => {
+  // === Create the toggle icon button ===
+	const toggleIcon = document.createElement('img');
+	toggleIcon.id = 'speaklink-toggle-icon';
+	toggleIcon.title = 'Open SpeakLink Translator';
+	toggleIcon.src = chrome.runtime.getURL('speaklinkicon.gif');  // use the .gif file here
+	toggleIcon.style.cssText = `
+	  position: fixed;
+	  bottom: 20px;
+	  left: 20px;
+	  width: 200px;      /* adjust as needed */
+	  border-radius: 24px;
+	  border: none;
+	  cursor: pointer;
+	  z-index: 99999999;
+	  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+	  display: block;    /* img is inline by default, block makes sizing easier */
+	  user-select: none;
+	`;
+
+	document.body.appendChild(toggleIcon);
+
+
   // === Create widget container ===
   const widget = document.createElement('div');
   widget.id = 'speaklink-widget';
 
   widget.innerHTML = `
     <style>
-      /* Minimal styling inside widget so it doesn't rely only on style.css */
+      /* Minimal styling inside widget */
       #speaklink-widget {
         position: fixed;
         bottom: 20px;
-        right: 20px;
-        width: 360px;
+        left: 20px;
+        width: 480px;
         background: white;
         border: 2px solid #444;
         border-radius: 8px;
@@ -147,9 +169,19 @@
 
   document.body.appendChild(widget);
 
-  // === Close button logic ===
+  // Hide widget initially and show icon
+  widget.style.display = 'none';
+  toggleIcon.style.display = 'flex';
+
+  // === Toggle logic ===
+  toggleIcon.addEventListener('click', () => {
+    widget.style.display = 'block';
+    toggleIcon.style.display = 'none';
+  });
+
   widget.querySelector('#speaklink-close-btn').addEventListener('click', () => {
     widget.style.display = 'none';
+    toggleIcon.style.display = 'flex';
   });
 
   // === Draggable widget header ===
